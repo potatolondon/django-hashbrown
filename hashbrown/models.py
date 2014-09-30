@@ -9,7 +9,8 @@ class Switch(models.Model):
         help_text='Short description of what this switch is doing', blank=True)
     globally_active = models.BooleanField(default=False)
 
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL, null=True)
+    users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, null=True, related_name='available_switches')
 
     def __unicode__(self):
         return self.label
