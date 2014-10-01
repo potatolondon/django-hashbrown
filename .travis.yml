@@ -1,0 +1,9 @@
+language: python
+python:
+  - "2.7"
+# command to install dependencies
+install:
+  - "pip install Django==1.6.7"
+# command to run tests
+script:
+  - python runtests.py
