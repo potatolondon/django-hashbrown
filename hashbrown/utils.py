@@ -17,5 +17,3 @@ def is_active(label, user=None):
 
     else:
         return False
-
-
