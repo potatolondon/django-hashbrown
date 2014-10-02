@@ -5,7 +5,7 @@ from django.test.utils import override_settings
 
 import hashbrown
 from .models import Switch
-from .utils import is_active
+from .testutils import switches
 
 
 HASHBROWN_SWITCH_DEFAULTS = {
@@ -180,3 +180,20 @@ class TemplateTagsTestCase(TestCase):
         rendered = template.render(Context({'user': user_2}))
         self.assertFalse('hello world!' in rendered)
         self.assertTrue('things!' in rendered)
+
+
+class TestUtilsTestCase(TestCase):
+
+    def test_as_decorator_active(self):
+        @switches(things=True)
+        def test():
+            return hashbrown.is_active('things')
+
+        self.assertTrue(test())
+
+    def test_as_decorator_inactive(self):
+        @switches(things=False)
+        def test():
+            return hashbrown.is_active('things')
+
+        self.assertFalse(test())

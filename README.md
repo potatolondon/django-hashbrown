@@ -99,7 +99,14 @@ description.
 
 ## Testing
 
-(Describes test decorators)
+Another useful feature is the ability to mock switches in your tests, so
+you can write tests for any case you are covering. It'll look something like:
+
+    from hashbrown.testutils import switches
+
+    @switches(my_flag=True)
+    def test_things(self):
+        # whatever you wanna test
 
 ## Acknowledgements
 
