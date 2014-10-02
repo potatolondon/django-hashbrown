@@ -1,5 +1,5 @@
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 def read(*rnames):
@@ -24,6 +24,6 @@ setup(
     license="BSD",
     keywords="django feature switching potato",
     url='https://github.com/potatolondon/django-hashbrown',
-    packages=['hashbrown'],
+    packages=find_packages(),
     zip_safe=False,
 )
