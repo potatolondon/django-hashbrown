@@ -3,6 +3,7 @@ from django.template import Context, Template, TemplateSyntaxError
 from django.test import TestCase
 from django.test.utils import override_settings
 
+import hashbrown
 from .models import Switch
 from .utils import is_active
 
@@ -24,7 +25,7 @@ class UtilsTestCase(TestCase):
         self.assertFalse(Switch.objects.filter(label='some_feature').exists())
 
         with self.assertNumQueries(4):  # get, start transaction, creation, end transaction
-            self.assertFalse(is_active('some_feature'))
+            self.assertFalse(hashbrown.is_active('some_feature'))
 
         self.assertTrue(Switch.objects.filter(label='some_feature').exists())
 
@@ -32,7 +33,7 @@ class UtilsTestCase(TestCase):
         Switch.objects.create(label='some_feature', globally_active=False)
 
         with self.assertNumQueries(1):  # get
-            self.assertFalse(is_active('some_feature'))
+            self.assertFalse(hashbrown.is_active('some_feature'))
 
         self.assertEqual(
             Switch.objects.filter(label='some_feature').count(), 1)
@@ -41,7 +42,7 @@ class UtilsTestCase(TestCase):
         Switch.objects.create(label='some_feature', globally_active=True)
 
         with self.assertNumQueries(1):  # get
-            self.assertTrue(is_active('some_feature'))
+            self.assertTrue(hashbrown.is_active('some_feature'))
 
         self.assertEqual(
             Switch.objects.filter(label='some_feature').count(), 1)
@@ -53,7 +54,7 @@ class UtilsTestCase(TestCase):
         Switch.objects.create(label='some_feature', globally_active=False)
 
         with self.assertNumQueries(2):  # get, check users
-            self.assertFalse(is_active('some_feature', user=user))
+            self.assertFalse(hashbrown.is_active('some_feature', user=user))
 
     def test_is_active_enabled_globally_for_users(self):
         user = get_user_model().objects.create(
@@ -62,7 +63,7 @@ class UtilsTestCase(TestCase):
         Switch.objects.create(label='some_feature', globally_active=True)
 
         with self.assertNumQueries(1):  # get
-            self.assertTrue(is_active('some_feature', user=user))
+            self.assertTrue(hashbrown.is_active('some_feature', user=user))
 
     def test_is_active_for_certain_user_with_flag_enabled(self):
         user = get_user_model().objects.create(
@@ -72,7 +73,7 @@ class UtilsTestCase(TestCase):
         switch.users.add(user)
 
         with self.assertNumQueries(1):  # get
-            self.assertTrue(is_active('some_feature', user=user))
+            self.assertTrue(hashbrown.is_active('some_feature', user=user))
 
     def test_is_active_for_different_user_with_flag_enabled(self):
         user_1 = get_user_model().objects.create(
@@ -84,15 +85,15 @@ class UtilsTestCase(TestCase):
         switch.users.add(user_1)
 
         with self.assertNumQueries(2):  # get, check user
-            self.assertFalse(is_active('some_feature', user=user_2))
+            self.assertFalse(hashbrown.is_active('some_feature', user=user_2))
 
     @override_settings(HASHBROWN_SWITCH_DEFAULTS=HASHBROWN_SWITCH_DEFAULTS)
     def test_default_switches_on_settings(self):
         with self.assertNumQueries(4):  # get, start transaction, creation, end transaction
-            self.assertTrue(is_active('test'))
+            self.assertTrue(hashbrown.is_active('test'))
 
         with self.assertNumQueries(4):  # get, start transaction, creation, end transaction
-            self.assertFalse(is_active('things'))
+            self.assertFalse(hashbrown.is_active('things'))
 
         self.assertEqual(
             Switch.objects.get(label='things').description,

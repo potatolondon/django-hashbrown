@@ -44,9 +44,9 @@ attributes:
 
 The simplest way to work with Hashbrown is to use `is_active` method:
 
-    from hashbrown.utils import is_active
+    import hashbrown
 
-    if is_active('things'):
+    if hashbrown.is_active('things'):
         do_something()
     else:
         do_something_else()
@@ -58,9 +58,9 @@ gets executed.
 Hashbrown switches can be linked to different users so only those people have
 access to certain feature:
 
-    from hashbrown.utils import is_active
+    import hashbrown
 
-    if is_active('things', user_object):
+    if hashbrown.is_active('things', user_object):
         do_something()
     else:
         do_something_else()
