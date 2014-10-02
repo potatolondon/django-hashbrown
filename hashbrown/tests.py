@@ -1,9 +1,9 @@
-from django.contrib.auth import get_user_model
 from django.template import Context, Template, TemplateSyntaxError
 from django.test import TestCase
 from django.test.utils import override_settings
 
 import hashbrown
+from .compat import get_user_model
 from .models import Switch
 from .testutils import switches
 

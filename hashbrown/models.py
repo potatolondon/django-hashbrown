@@ -1,5 +1,6 @@
 from django.db import models
-from django.conf import settings
+
+from .compat import User
 
 
 class Switch(models.Model):
@@ -10,7 +11,7 @@ class Switch(models.Model):
     globally_active = models.BooleanField(default=False)
 
     users = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, null=True, related_name='available_switches')
+        User, null=True, related_name='available_switches')
 
     def __unicode__(self):
         return self.label
