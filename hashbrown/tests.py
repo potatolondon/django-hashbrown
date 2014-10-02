@@ -1,9 +1,21 @@
 from django.contrib.auth import get_user_model
 from django.template import Context, Template, TemplateSyntaxError
 from django.test import TestCase
+from django.test.utils import override_settings
 
 from .models import Switch
 from .utils import is_active
+
+
+HASHBROWN_SWITCH_DEFAULTS = {
+    'test': {
+        'globally_active': True
+    },
+    'things': {
+        'globally_active': False,
+        'description': 'This does some things'
+    }
+}
 
 
 class UtilsTestCase(TestCase):
@@ -73,6 +85,19 @@ class UtilsTestCase(TestCase):
 
         with self.assertNumQueries(2):  # get, check user
             self.assertFalse(is_active('some_feature', user=user_2))
+
+    @override_settings(HASHBROWN_SWITCH_DEFAULTS=HASHBROWN_SWITCH_DEFAULTS)
+    def test_default_switches_on_settings(self):
+        with self.assertNumQueries(4):  # get, start transaction, creation, end transaction
+            self.assertTrue(is_active('test'))
+
+        with self.assertNumQueries(4):  # get, start transaction, creation, end transaction
+            self.assertFalse(is_active('things'))
+
+        self.assertEqual(
+            Switch.objects.get(label='things').description,
+            'This does some things'
+        )
 
 
 class TemplateTagsTestCase(TestCase):

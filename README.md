@@ -79,7 +79,23 @@ Same way, you can use the templatetag `ifperm`:
 
 ## Configuration
 
-(Describes settings for)
+You can prepare your switches before they get created in your settings,
+indicating that way either if it'll be enabled or disabled. You can add into
+your `settings.py` something like:
+
+    HASHBROWN_SWITCH_DEFAULTS = {
+        'test': {
+            'globally_active': True
+        },
+        'things': {
+            'globally_active': False,
+            'description': 'This does some things'
+        }
+    }
+
+So, when the switch "test" gets checked the first time, the switch will get
+created globally active, while "things" won't be active but it'll have a
+description.
 
 ## Testing
 
