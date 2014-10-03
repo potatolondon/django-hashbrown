@@ -107,7 +107,7 @@ class TemplateTagsTestCase(TestCase):
 
         template = Template("""
             {% load hashbrown_tags %}
-            {% ifswitch test %}
+            {% ifswitch 'test' %}
             hello world!
             {% endifswitch %}
         """)
@@ -118,18 +118,19 @@ class TemplateTagsTestCase(TestCase):
     def test_simple_new_switch(self):
         template = Template("""
             {% load hashbrown_tags %}
-            {% ifswitch test %}
+            {% ifswitch 'test' %}
             hello world!
             {% endifswitch %}
         """)
         rendered = template.render(Context())
 
         self.assertFalse('hello world!' in rendered)
+        self.assertTrue(Switch.objects.filter(label='test').exists())
 
     def test_not_closing_raises_error(self):
         self.assertRaises(TemplateSyntaxError, Template, """
             {% load hashbrown_tags %}
-            {% ifswitch test %}
+            {% ifswitch 'test' %}
             hello world!
         """)
 
@@ -144,7 +145,7 @@ class TemplateTagsTestCase(TestCase):
     def test_else(self):
         template = Template("""
             {% load hashbrown_tags %}
-            {% ifswitch test %}
+            {% ifswitch 'test' %}
             hello world!
             {% else %}
             things!
@@ -166,7 +167,7 @@ class TemplateTagsTestCase(TestCase):
 
         template = Template("""
             {% load hashbrown_tags %}
-            {% ifswitch some_feature user %}
+            {% ifswitch 'some_feature' user %}
             hello world!
             {% else %}
             things!

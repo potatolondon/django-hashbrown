@@ -35,7 +35,7 @@ class SwitchNode(template.Node):
     def __init__(self, nodelist_true, nodelist_false, name, user):
         self.nodelist_true = nodelist_true
         self.nodelist_false = nodelist_false
-        self.name = name
+        self.name = template.Variable(name)
 
         if user:
             self.user = template.Variable(user)
@@ -48,7 +48,7 @@ class SwitchNode(template.Node):
         else:
             user = None
 
-        if not is_active(self.name, user):
+        if not is_active(self.name.resolve(context), user):
             return self.nodelist_false.render(context)
 
         return self.nodelist_true.render(context)

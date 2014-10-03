@@ -71,7 +71,17 @@ Same way, you can use the templatetag `ifperm`:
 
     {% load hashbrown_tags %}
 
-    {% ifswitch test %}
+    {% ifswitch 'test' %}
+        hello world!
+    {% else %}
+        things!
+    {% endifswitch %}
+
+Even with the user:
+
+    {% load hashbrown_tags %}
+
+    {% ifswitch 'test' user %}
         hello world!
     {% else %}
         things!
