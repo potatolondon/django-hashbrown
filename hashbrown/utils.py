@@ -1,5 +1,4 @@
 from django.conf import settings
-from .compat import get_user_model
 from .models import Switch
 
 
@@ -24,10 +23,7 @@ def is_active(label, user=None):
         return switch.globally_active
 
     if switch.globally_active or (
-        user is not None and user.pk in get_user_model().objects.filter(
-            available_switches=switch.pk).values_list('pk', flat=True)):
-
+        user and user.available_switches.filter(pk=switch.pk).exists()
+    ):
         return True
-
-    else:
-        return False
+    return False
