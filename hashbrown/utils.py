@@ -5,9 +5,7 @@ from .models import Switch
 def is_active(label, user=None):
     defaults = getattr(settings, 'HASHBROWN_SWITCH_DEFAULTS', {})
 
-    globally_active = defaults[label].get(
-        'globally_active',
-        False) if label in defaults else False
+    globally_active = defaults[label].get( 'globally_active', False)
 
     description = defaults[label].get(
         'description',

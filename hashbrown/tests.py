@@ -9,6 +9,7 @@ from .testutils import switches
 
 
 HASHBROWN_SWITCH_DEFAULTS = {
+    'some_feature': {},
     'test': {
         'globally_active': True
     },
@@ -19,15 +20,27 @@ HASHBROWN_SWITCH_DEFAULTS = {
 }
 
 
+@override_settings(HASHBROWN_SWITCH_DEFAULTS=HASHBROWN_SWITCH_DEFAULTS)
 class UtilsTestCase(TestCase):
 
     def test_is_active_without_existing_flag_creates_it(self):
+        """ Test that calling `is_active` for a switch that doesn't yet exist in the DB
+            creates it for us (so long as it has a default set in HASHBROWN_SWITCH_DEFAULTS).
+        """
         self.assertFalse(Switch.objects.filter(label='some_feature').exists())
 
         with self.assertNumQueries(4):  # get, start transaction, creation, end transaction
             self.assertFalse(hashbrown.is_active('some_feature'))
 
         self.assertTrue(Switch.objects.filter(label='some_feature').exists())
+
+    def test_undefined_flags_not_created_automatically(self):
+        self.assertFalse('monkey' in HASHBROWN_SWITCH_DEFAULTS)
+        self.assertFalse(Switch.objects.filter(label='monkey').exists())
+
+        with self.assertRaises(KeyError):
+            self.assertFalse(hashbrown.is_active('monkey'))
+        self.assertFalse(Switch.objects.filter(label='monkey').exists())
 
     def test_is_active_with_existing_disabled_flag(self):
         Switch.objects.create(label='some_feature', globally_active=False)
@@ -87,7 +100,6 @@ class UtilsTestCase(TestCase):
         with self.assertNumQueries(2):  # get, check user
             self.assertFalse(hashbrown.is_active('some_feature', user=user_2))
 
-    @override_settings(HASHBROWN_SWITCH_DEFAULTS=HASHBROWN_SWITCH_DEFAULTS)
     def test_default_switches_on_settings(self):
         with self.assertNumQueries(4):  # get, start transaction, creation, end transaction
             self.assertTrue(hashbrown.is_active('test'))
@@ -101,13 +113,14 @@ class UtilsTestCase(TestCase):
         )
 
 
+@override_settings(HASHBROWN_SWITCH_DEFAULTS=HASHBROWN_SWITCH_DEFAULTS)
 class TemplateTagsTestCase(TestCase):
     def test_simple(self):
-        Switch.objects.create(label='test', globally_active=True)
+        Switch.objects.create(label='some_feature', globally_active=True)
 
         template = Template("""
             {% load hashbrown_tags %}
-            {% ifswitch 'test' %}
+            {% ifswitch 'some_feature' %}
             hello world!
             {% endifswitch %}
         """)
@@ -118,14 +131,14 @@ class TemplateTagsTestCase(TestCase):
     def test_simple_new_switch(self):
         template = Template("""
             {% load hashbrown_tags %}
-            {% ifswitch 'test' %}
+            {% ifswitch 'some_feature' %}
             hello world!
             {% endifswitch %}
         """)
         rendered = template.render(Context())
 
         self.assertFalse('hello world!' in rendered)
-        self.assertTrue(Switch.objects.filter(label='test').exists())
+        self.assertTrue(Switch.objects.filter(label='some_feature').exists())
 
     def test_not_closing_raises_error(self):
         self.assertRaises(TemplateSyntaxError, Template, """
@@ -145,7 +158,7 @@ class TemplateTagsTestCase(TestCase):
     def test_else(self):
         template = Template("""
             {% load hashbrown_tags %}
-            {% ifswitch 'test' %}
+            {% ifswitch 'some_feature' %}
             hello world!
             {% else %}
             things!
@@ -183,6 +196,7 @@ class TemplateTagsTestCase(TestCase):
         self.assertTrue('things!' in rendered)
 
 
+@override_settings(HASHBROWN_SWITCH_DEFAULTS=HASHBROWN_SWITCH_DEFAULTS)
 class TestUtilsTestCase(TestCase):
 
     def test_as_decorator_active(self):
