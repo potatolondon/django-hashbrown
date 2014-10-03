@@ -7,7 +7,7 @@ Yet another dead simple feature switching library for Django.
 
 ## Installation
 
-Reportato is [hosted on PyPI](https://pypi.python.org/pypi/django-hashbrown) so
+Django Hashbrown is [hosted on PyPI](https://pypi.python.org/pypi/django-hashbrown) so
 you can just install it using either:
 
 
