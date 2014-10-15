@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from django.template import Context, Template, TemplateSyntaxError
 from django.test import TestCase
 from django.test.utils import override_settings
@@ -198,3 +199,11 @@ class TestUtilsTestCase(TestCase):
             return hashbrown.is_active('things')
 
         self.assertFalse(test())
+
+
+class SwitchModelTestCase(TestCase):
+    def test_label_is_unique(self):
+        foo_switch = Switch.objects.create(label='foo')
+
+        with self.assertRaises(IntegrityError):
+            Switch.objects.create(label='foo')
