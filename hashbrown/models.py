@@ -13,5 +13,8 @@ class Switch(models.Model):
     users = models.ManyToManyField(
         User, null=True, related_name='available_switches', blank=True)
 
+    class Meta:
+        verbose_name_plural = u'switches'
+
     def __unicode__(self):
         return self.label
