@@ -1,3 +1,4 @@
+from django.core.management import call_command
 from django.db import IntegrityError
 from django.template import Context, Template, TemplateSyntaxError
 from django.test import TestCase
@@ -207,3 +208,53 @@ class SwitchModelTestCase(TestCase):
 
         with self.assertRaises(IntegrityError):
             Switch.objects.create(label='foo')
+
+
+class ManagementCommandTestCase(TestCase):
+    def test_switches_command_creates_missing_switches(self):
+        self.assertEqual(Switch.objects.count(), 0)
+
+        with self.settings(HASHBROWN_SWITCH_DEFAULTS=HASHBROWN_SWITCH_DEFAULTS):
+            call_command('switches')
+
+        self.assertItemsEqual(
+            Switch.objects.values_list('label', flat=True),
+            ['test', 'things'],
+        )
+
+    def test_switches_command_ignores_existing_switches(self):
+        foo = Switch.objects.create(
+            label='foo',
+            globally_active=False,
+            description='Before description',
+        )
+
+        defaults = {
+            'foo': {
+                'globally_active': True,
+                'description': 'After description',
+            },
+        }
+
+        with self.settings(HASHBROWN_SWITCH_DEFAULTS=defaults):
+            call_command('switches')
+
+        self.assertItemsEqual(
+            Switch.objects.values(),
+            [
+                {
+                    'id': foo.pk,
+                    'label': 'foo',
+                    'globally_active': False,
+                    'description': 'Before description',
+                }
+            ],
+        )
+
+    def test_force_flag_deletes_unknown_switches(self):
+        Switch.objects.create(label='foo')
+
+        with self.settings(HASHBROWN_SWITCH_DEFAULTS={}):
+            call_command('switches', force=True)
+
+        self.assertEqual(Switch.objects.count(), 0)

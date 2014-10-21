@@ -118,6 +118,26 @@ you can write tests for any case you are covering. It'll look something like:
     def test_things(self):
         # whatever you wanna test
 
+## Django management command
+
+Django Hashbrown adds a 'switches' management command, which creates / deletes
+switches defined in your HASHBROWN_SWITCH_DEFAULTS settings.
+
+To create all switches listed in HASHBROWN_SWITCH_DEFAULTS:
+
+    python manage.py switches
+
+Any existing switches already in the database will not be updated.
+
+To create all switches and delete any switches *not* listed in
+HASHBROWN_SWITCH_DEFAULTS:
+
+    python manage.py switches --delete
+
+You will be prompted for confirmation before the switches are deleted. Use
+`--force` to delete the switches without confirmation.
+
+
 ## Acknowledgements
 
 Django Hashbrown is based and takes some pieces of code from Django Gargoyle
