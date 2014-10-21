@@ -26,8 +26,7 @@ class UtilsTestCase(TestCase):
     def test_is_active_without_existing_flag_creates_it(self):
         self.assertFalse(Switch.objects.filter(label='some_feature').exists())
 
-        with self.assertNumQueries(4):  # get, start transaction, creation, end transaction
-            self.assertFalse(hashbrown.is_active('some_feature'))
+        self.assertFalse(hashbrown.is_active('some_feature'))
 
         self.assertTrue(Switch.objects.filter(label='some_feature').exists())
 
@@ -91,11 +90,9 @@ class UtilsTestCase(TestCase):
 
     @override_settings(HASHBROWN_SWITCH_DEFAULTS=HASHBROWN_SWITCH_DEFAULTS)
     def test_default_switches_on_settings(self):
-        with self.assertNumQueries(4):  # get, start transaction, creation, end transaction
-            self.assertTrue(hashbrown.is_active('test'))
+        self.assertTrue(hashbrown.is_active('test'))
 
-        with self.assertNumQueries(4):  # get, start transaction, creation, end transaction
-            self.assertFalse(hashbrown.is_active('things'))
+        self.assertFalse(hashbrown.is_active('things'))
 
         self.assertEqual(
             Switch.objects.get(label='things').description,

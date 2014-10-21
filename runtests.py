@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 import os, sys
+
+import django
 from django.conf import settings
 
 DIRNAME = os.path.dirname(__file__)
@@ -18,6 +20,11 @@ settings.configure(DEBUG = True,
                                     )
                    )
 
+try:
+      django.setup()
+except AttributeError:
+      # Running Django<1.7
+      pass
 
 from django.test.simple import DjangoTestSuiteRunner
 test_runner = DjangoTestSuiteRunner(verbosity=1)
