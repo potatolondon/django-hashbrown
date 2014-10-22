@@ -8,7 +8,7 @@ def read(*rnames):
 
 setup(
     name="django-hashbrown",
-    version="0.5",
+    version="0.6",
     author="Pablo Recio",
     author_email="pablo@potatolondon.com",
     description="Yet another dead simple feature switching library for Django.",
