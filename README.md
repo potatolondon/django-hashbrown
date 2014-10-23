@@ -67,7 +67,7 @@ access to certain feature:
 
 ### Django templates
 
-Same way, you can use the templatetag `ifperm`:
+Same way, you can use the templatetag `ifswitch`:
 
     {% load hashbrown_tags %}
 
