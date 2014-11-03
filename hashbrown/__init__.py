@@ -1,1 +1,1 @@
-from utils import is_active
+from .utils import is_active
