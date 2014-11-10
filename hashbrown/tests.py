@@ -214,8 +214,8 @@ class ManagementCommandTestCase(TestCase):
         with self.settings(HASHBROWN_SWITCH_DEFAULTS=HASHBROWN_SWITCH_DEFAULTS):
             call_command('switches')
 
-        self.assertItemsEqual(
-            Switch.objects.values_list('label', flat=True),
+        self.assertEqual(
+            list(Switch.objects.values_list('label', flat=True)),
             ['test', 'things'],
         )
 
@@ -236,8 +236,8 @@ class ManagementCommandTestCase(TestCase):
         with self.settings(HASHBROWN_SWITCH_DEFAULTS=defaults):
             call_command('switches')
 
-        self.assertItemsEqual(
-            Switch.objects.values(),
+        self.assertEqual(
+            list(Switch.objects.values()),
             [
                 {
                     'id': foo.pk,
