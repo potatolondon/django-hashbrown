@@ -25,9 +25,9 @@ def is_active(label, user=None):
     if created:
         return switch.globally_active
 
-    if switch.globally_active or (
-        user and user.available_switches.filter(pk=switch.pk).exists()
-    ):
+    if (switch.globally_active or (
+            user and not user.is_anonymous() and
+            user.available_switches.filter(pk=switch.pk).exists())):
         return True
     return False
 
