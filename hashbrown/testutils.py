@@ -22,7 +22,7 @@ class SwitchesContext(object):
         self.unpatch()
 
     def patch(self):
-        def is_active_patched(tag):
+        def is_active_patched(tag, user=None):
             return self.keys.get(tag, self.is_active_func(tag))
 
         hashbrown.is_active = is_active_patched
