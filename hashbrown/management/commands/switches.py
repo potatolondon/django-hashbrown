@@ -10,20 +10,19 @@ from hashbrown.utils import SETTINGS_KEY, is_active, get_defaults
 class Command(BaseCommand):
     help = 'Creates / deletes feature switches in the database'
 
-    option_list = BaseCommand.option_list + (
-        make_option(
+    def add_arguments(self, parser):
+        parser.add_argument(
             '--delete',
             action='store_true',
             default=False,
             help='Delete switches in the database that are not in ' + SETTINGS_KEY,
-        ),
-        make_option(
+        )
+        parser.add_argument(
             '--force',
             action='store_true',
             default=False,
             help='Delete switches without confirmation (implies --delete)',
-        ),
-    )
+        )
 
     def handle(self, *args, **kwargs):
         if kwargs['delete'] or kwargs['force']:
