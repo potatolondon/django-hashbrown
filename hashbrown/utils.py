@@ -1,11 +1,12 @@
 from django.conf import settings
-from .models import Switch
 
 
 SETTINGS_KEY = 'HASHBROWN_SWITCH_DEFAULTS'
 
 
 def is_active(label, user=None):
+    from .models import Switch
+
     defaults = get_defaults()
 
     globally_active = defaults[label].get(
