@@ -19,6 +19,12 @@ settings.configure(
       ),
       # Django 1.7 raises a warning if this isn't set. Pollutes test output.
       MIDDLEWARE_CLASSES = (),
+      TEMPLATES = [{
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [],
+            'APP_DIRS': True,
+            'OPTIONS': {},
+      }],
 )
 
 try:
