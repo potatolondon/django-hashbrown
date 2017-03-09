@@ -4,6 +4,7 @@
 
 Yet another dead simple feature switching library for Django.
 
+Supports Django 1.8, 1.9 & 1.10.
 
 ## Installation
 
