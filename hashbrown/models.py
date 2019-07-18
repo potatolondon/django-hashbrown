@@ -11,7 +11,7 @@ class Switch(models.Model):
     globally_active = models.BooleanField(default=False)
 
     users = models.ManyToManyField(
-        User, null=True, related_name='available_switches', blank=True)
+        User, related_name='available_switches', blank=True)
 
     class Meta:
         verbose_name_plural = u'switches'
